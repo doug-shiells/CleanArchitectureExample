@@ -12,28 +12,12 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Infrastructure
     {
         public static IServiceCollection RegisterRepositories(this IServiceCollection serviceCollection)
         {
-            
             serviceCollection.AddDbContext<CleanArchitectureExampleContext>(ServiceLifetime.Scoped);
             serviceCollection.AddScoped<ITransactionFactory, TransactionFactory>();
             serviceCollection.AddTransient<ITransaction, Transaction>();
-
-            var entities = 
-                typeof(CleanArchitectureExampleContext)
-                    .GetProperties()
-                    .Where(p => p.PropertyType.IsGenericType 
-                             && p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
-                .Select(dbsetType => dbsetType.PropertyType.GetGenericArguments().Single());
-                
-
-            foreach (var entity in entities)
-            {
-                serviceCollection.AddScoped(
-                    typeof(IEntityRepository<>).MakeGenericType(entity),
-                    typeof(EntityRepository<>).MakeGenericType(entity));
-                serviceCollection.AddScoped(
-                    typeof(IQueryable<>).MakeGenericType(entity),
-                    typeof(EntityRepository<>).MakeGenericType(entity));
-            }
+            
+            serviceCollection.AddScoped(typeof(IQueryable<>), typeof(EntityRepository<>));
+            serviceCollection.AddScoped(typeof(IEntityRepository<>), typeof(EntityRepository<>));
             
             return serviceCollection;
         }
