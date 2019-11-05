@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace CleanArchitectureExample.Domain
 {
@@ -7,5 +9,8 @@ namespace CleanArchitectureExample.Domain
         public int CourseId { get; set; }
         public string CourseName { get; set; }
         public int RequiredUnitCount { get; set; }
+
+        public virtual ICollection<StudentCourse> Students { get; set; }
+        public virtual ICollection<Unit> Units { get; set; }
     }
 }

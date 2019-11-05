@@ -25,7 +25,10 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CourseName");
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasColumnName("Name")
+                        .HasMaxLength(128);
 
                     b.Property<int>("RequiredUnitCount");
 
@@ -42,13 +45,30 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
 
                     b.Property<DateTime>("DateOfBirth");
 
-                    b.Property<string>("Firstname");
+                    b.Property<string>("Firstname")
+                        .IsRequired()
+                        .HasMaxLength(128);
 
-                    b.Property<string>("Surname");
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasMaxLength(128);
 
                     b.HasKey("StudentId");
 
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("CleanArchitectureExample.Domain.StudentCourse", b =>
+                {
+                    b.Property<int>("StudentId");
+
+                    b.Property<int>("CourseId");
+
+                    b.HasKey("StudentId", "CourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("StudentCourse");
                 });
 
             modelBuilder.Entity("CleanArchitectureExample.Domain.Unit", b =>
@@ -57,11 +77,37 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("UnitName");
+                    b.Property<int?>("CourseId");
+
+                    b.Property<string>("UnitName")
+                        .IsRequired()
+                        .HasMaxLength(128);
 
                     b.HasKey("UnitId");
 
+                    b.HasIndex("CourseId");
+
                     b.ToTable("Units");
+                });
+
+            modelBuilder.Entity("CleanArchitectureExample.Domain.StudentCourse", b =>
+                {
+                    b.HasOne("CleanArchitectureExample.Domain.Course", "Course")
+                        .WithMany("Students")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CleanArchitectureExample.Domain.Student", "Student")
+                        .WithMany("Courses")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CleanArchitectureExample.Domain.Unit", b =>
+                {
+                    b.HasOne("CleanArchitectureExample.Domain.Course")
+                        .WithMany("Units")
+                        .HasForeignKey("CourseId");
                 });
 #pragma warning restore 612, 618
         }

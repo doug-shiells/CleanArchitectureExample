@@ -1,5 +1,6 @@
 ﻿using System;
 using CleanArchitectureExample.Domain;
+using CleanArchitectureExample.Persistence.EntityFramework.ModelBuilderExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureExample.Persistence.EntityFramework
@@ -18,6 +19,10 @@ namespace CleanArchitectureExample.Persistence.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.BuildStudent();
+            modelBuilder.BuildCourses();
+            modelBuilder.BuildStudentCourseRelationship();
+            modelBuilder.BuildUnits();
         }
 
         public DbSet<Student> Students { get; set; }
