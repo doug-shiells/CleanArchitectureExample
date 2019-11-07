@@ -4,9 +4,9 @@ using System.Text;
 
 namespace CleanArchitectureExample.Application.CQRS
 {
-    public interface ICommandInvoker
+    public interface IOperationInvoker
     {
-        void Invoke(ICommand command);
+        CommandResult Invoke(ICommand command);
         TQueryResult RunQuery<TQueryResult>(IQuery<TQueryResult> query);
     }
 }

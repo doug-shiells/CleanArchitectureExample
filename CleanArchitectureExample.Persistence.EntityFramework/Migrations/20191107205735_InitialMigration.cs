@@ -14,12 +14,14 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
                 {
                     CourseId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    PublicKey = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(maxLength: 128, nullable: false),
                     RequiredUnitCount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.CourseId);
+                    table.UniqueConstraint("IX_Course_PublicKey_Unique", x => x.PublicKey);
                 });
 
             migrationBuilder.CreateTable(
@@ -28,6 +30,7 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
                 {
                     StudentId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    PublicKey = table.Column<Guid>(nullable: false),
                     Firstname = table.Column<string>(maxLength: 128, nullable: false),
                     Surname = table.Column<string>(maxLength: 128, nullable: false),
                     DateOfBirth = table.Column<DateTime>(nullable: false)
@@ -35,6 +38,7 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Students", x => x.StudentId);
+                    table.UniqueConstraint("IX_Student_PublicKey_Unique", x => x.PublicKey);
                 });
 
             migrationBuilder.CreateTable(
@@ -43,12 +47,14 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
                 {
                     UnitId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    PublicKey = table.Column<Guid>(nullable: false),
                     UnitName = table.Column<string>(maxLength: 128, nullable: false),
                     CourseId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Units", x => x.UnitId);
+                    table.UniqueConstraint("IX_Unit_PublicKey_Unique", x => x.PublicKey);
                     table.ForeignKey(
                         name: "FK_Units_Courses_CourseId",
                         column: x => x.CourseId,

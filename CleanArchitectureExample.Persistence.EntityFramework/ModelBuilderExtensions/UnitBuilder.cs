@@ -8,12 +8,20 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.ModelBuilderExten
         internal static void BuildUnits(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Unit>()
-                        .HasKey(s => s.UnitId);
+                        .HasKey(e => e.UnitId);
 
             modelBuilder.Entity<Unit>()
-                        .Property(s => s.UnitName)
+                        .Property(e => e.UnitName)
                         .HasMaxLength(128)
                         .IsRequired();
+
+            modelBuilder.Entity<Unit>()
+                .HasAlternateKey(e => e.PublicKey)
+                .HasName("IX_Unit_PublicKey_Unique");
+
+            modelBuilder.Entity<Unit>()
+                .Property(e => e.PublicKey)
+                .ValueGeneratedOnAdd(); 
         }
     }
 }

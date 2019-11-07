@@ -23,6 +23,14 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.ModelBuilderExten
             modelBuilder.Entity<Student>()
                         .Property(s => s.DateOfBirth)
                         .IsRequired();
+
+            modelBuilder.Entity<Student>()
+                .HasAlternateKey(c => c.PublicKey)
+                .HasName("IX_Student_PublicKey_Unique");
+
+            modelBuilder.Entity<Student>()
+                .Property(e => e.PublicKey)
+                .ValueGeneratedOnAdd();
         }
     }
 }

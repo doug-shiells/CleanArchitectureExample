@@ -21,6 +21,14 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.ModelBuilderExten
             modelBuilder.Entity<Course>()
                         .Property(s => s.RequiredUnitCount)
                         .IsRequired();
+
+            modelBuilder.Entity<Course>()
+                .HasAlternateKey(c => c.PublicKey)
+                .HasName("IX_Course_PublicKey_Unique");
+
+            modelBuilder.Entity<Course>()
+                .Property(e => e.PublicKey)
+                .ValueGeneratedOnAdd();
         }
     }
 }

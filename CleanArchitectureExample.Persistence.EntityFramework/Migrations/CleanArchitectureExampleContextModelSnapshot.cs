@@ -30,9 +30,15 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
                         .HasColumnName("Name")
                         .HasMaxLength(128);
 
+                    b.Property<Guid>("PublicKey")
+                        .ValueGeneratedOnAdd();
+
                     b.Property<int>("RequiredUnitCount");
 
                     b.HasKey("CourseId");
+
+                    b.HasAlternateKey("PublicKey")
+                        .HasName("IX_Course_PublicKey_Unique");
 
                     b.ToTable("Courses");
                 });
@@ -49,11 +55,17 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
                         .IsRequired()
                         .HasMaxLength(128);
 
+                    b.Property<Guid>("PublicKey")
+                        .ValueGeneratedOnAdd();
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(128);
 
                     b.HasKey("StudentId");
+
+                    b.HasAlternateKey("PublicKey")
+                        .HasName("IX_Student_PublicKey_Unique");
 
                     b.ToTable("Students");
                 });
@@ -79,11 +91,17 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Migrations
 
                     b.Property<int?>("CourseId");
 
+                    b.Property<Guid>("PublicKey")
+                        .ValueGeneratedOnAdd();
+
                     b.Property<string>("UnitName")
                         .IsRequired()
                         .HasMaxLength(128);
 
                     b.HasKey("UnitId");
+
+                    b.HasAlternateKey("PublicKey")
+                        .HasName("IX_Unit_PublicKey_Unique");
 
                     b.HasIndex("CourseId");
 
