@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CleanArchitectureExample.Application.CQRS;
+﻿using CleanArchitectureExample.Application.CQRS;
 using CleanArchitectureExample.Domain;
 
-namespace CleanArchitectureExample.Application.Students.Commands
+namespace CleanArchitectureExample.Application.Students.Commands.CreateStudent
 {
     public class CreateStudentCommand : ICommand
     {

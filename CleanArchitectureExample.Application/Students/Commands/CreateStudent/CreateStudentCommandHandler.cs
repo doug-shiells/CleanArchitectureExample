@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using CleanArchitectureExample.Application.CQRS;
 using CleanArchitectureExample.Application.Persistence;
-using CleanArchitectureExample.Application.Students.Commands;
 using CleanArchitectureExample.Domain;
 
-namespace CleanArchitectureExample.Application.Students.CommandHandlers
+namespace CleanArchitectureExample.Application.Students.Commands.CreateStudent
 {
     internal class CreateStudentCommandHandler : ICommandHandler<CreateStudentCommand>
     {
