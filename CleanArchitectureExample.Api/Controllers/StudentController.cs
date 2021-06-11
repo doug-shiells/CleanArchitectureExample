@@ -52,19 +52,16 @@ namespace CleanArchitectureExample.Api.Controllers
         [HttpPost("validation-error")]
         public ActionResult ValidationError()
         {
-            var createStudentCommand =
+            return _operationInvoker.Invoke(
                 new CreateStudentCommand(
                     new Student
                     {
                         PublicKey = Guid.NewGuid(),
-                        DateOfBirth = DateTime.Parse("28/11/1992"),
+                        DateOfBirth = DateTime.Now.AddDays(1),
                         Firstname = "Jon",
                         Surname = "Smith"
-                    });
-
-            var result1 = _operationInvoker.Invoke(createStudentCommand);
-
-            return _operationInvoker.Invoke(createStudentCommand).ToActionResult();
+                    }))
+                .ToActionResult();
         }
 
 

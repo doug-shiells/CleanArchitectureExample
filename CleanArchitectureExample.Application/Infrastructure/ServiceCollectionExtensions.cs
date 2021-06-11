@@ -39,6 +39,10 @@ namespace CleanArchitectureExample.Application.Infrastructure
 
             return serviceCollection;
         }
+        public static IServiceCollection RegisterIClock(this IServiceCollection serviceCollection)
+        {
+            return serviceCollection.AddSingleton<IClock, Clock>();
+        }
 
         private static IServiceCollection RegisterCommandHandlers(this IServiceCollection serviceCollection)
         {
