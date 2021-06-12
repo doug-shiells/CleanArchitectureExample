@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using CleanArchitectureExample.Application.Persistence;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitectureExample.Persistence.EntityFramework.Infrastructure
@@ -15,10 +11,13 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Infrastructure
             serviceCollection.AddDbContext<CleanArchitectureExampleContext>(ServiceLifetime.Scoped);
             serviceCollection.AddScoped<ITransactionFactory, TransactionFactory>();
             serviceCollection.AddTransient<ITransaction, Transaction>();
-            
+
+            serviceCollection.AddSingleton(typeof(IQueryableAsync), typeof(QueryableAsync));
             serviceCollection.AddScoped(typeof(IQueryable<>), typeof(EntityRepository<>));
+            serviceCollection.AddScoped(typeof(IAsyncQueryable<>), typeof(EntityRepository<>));
             serviceCollection.AddScoped(typeof(IEntityRepository<>), typeof(EntityRepository<>));
-            
+
+
             return serviceCollection;
         }
     }

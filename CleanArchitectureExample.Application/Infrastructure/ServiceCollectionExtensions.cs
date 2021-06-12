@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using CleanArchitectureExample.Application.CQRS;
-using CleanArchitectureExample.Application.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitectureExample.Application.Infrastructure
 {
     public static class ServiceCollectionExtensions
     {
-        private static readonly Func<IServiceProvider, Func<ICommand, dynamic>> commandHanlderResolverFactory = 
+        private static readonly Func<IServiceProvider, Func<ICommand, dynamic>> CommandHanlderResolverFactory = 
             (serviceProvider) => 
                 (command) => 
                     (dynamic) serviceProvider.GetService(typeof(ICommandHandler<>)
                                              .MakeGenericType(command.GetType()));
 
-        private static readonly Func<IServiceProvider, Func<IQuery, dynamic>> queryExecuterResolverFactory =
+        private static readonly Func<IServiceProvider, Func<ICommand, dynamic>> AsyncCommandHanlderResolverFactory =
+            (serviceProvider) =>
+                (command) =>
+                    (dynamic)serviceProvider.GetService(typeof(IAsyncCommandHandler<>)
+                        .MakeGenericType(command.GetType()));
+
+        private static readonly Func<IServiceProvider, Func<IQuery, dynamic>> QueryExecuterResolverFactory =
             (serviceProvider) =>
                 (query) =>
                     (dynamic) serviceProvider.GetService(
@@ -31,10 +33,25 @@ namespace CleanArchitectureExample.Application.Infrastructure
                                      && i.GetGenericTypeDefinition() == typeof(IQuery<>))
                                  .GetGenericArguments()[0]));
 
+        private static readonly Func<IServiceProvider, Func<IQuery, dynamic>> AsyncQueryExecuterResolverFactory =
+            (serviceProvider) =>
+                (query) =>
+                    (dynamic)serviceProvider.GetService(
+                        typeof(IAsyncQueryExecutor<,>).MakeGenericType(
+                            query.GetType(),
+                            query.GetType()
+                                .GetInterfaces()
+                                .Single(i =>
+                                    i.IsGenericType
+                                    && i.GetGenericTypeDefinition() == typeof(IQuery<>))
+                                .GetGenericArguments()[0]));
+
         public static IServiceCollection RegisterCommands(this IServiceCollection serviceCollection)
         {
             serviceCollection.RegisterCommandHandlers()
+                             .RegisterAsyncCommandHandlers()
                              .RegisterQueryExecutors()
+                             .RegisterAsyncQueryExecutors()
                              .RegisterOperationInvoker();
 
             return serviceCollection;
@@ -65,6 +82,26 @@ namespace CleanArchitectureExample.Application.Infrastructure
             return serviceCollection;
         }
 
+        private static IServiceCollection RegisterAsyncCommandHandlers(this IServiceCollection serviceCollection)
+        {
+
+            var commandHandlers =
+                Assembly.GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(t => !t.IsAbstract && !t.IsInterface
+                                              && t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncCommandHandler<>)));
+
+            foreach (var type in commandHandlers)
+            {
+
+                serviceCollection.AddTransient(
+                    type.GetInterfaces()
+                        .Single(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncCommandHandler<>)),
+                    type);
+            }
+
+            return serviceCollection;
+        }
         private static IServiceCollection RegisterQueryExecutors(this IServiceCollection serviceCollection)
         {
             var queryExecutors =
@@ -84,12 +121,32 @@ namespace CleanArchitectureExample.Application.Infrastructure
             return serviceCollection;
         }
 
+        private static IServiceCollection RegisterAsyncQueryExecutors(this IServiceCollection serviceCollection)
+        {
+            var queryExecutors =
+                Assembly.GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(t => !t.IsAbstract && !t.IsInterface
+                                              && t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncQueryExecutor<,>)));
+
+            foreach (var type in queryExecutors)
+            {
+                serviceCollection.AddTransient(
+                    type.GetInterfaces()
+                        .Single(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncQueryExecutor<,>)),
+                    type);
+            }
+
+            return serviceCollection;
+        }
         private static IServiceCollection RegisterOperationInvoker(this IServiceCollection serviceCollection)
         {
             return serviceCollection.AddTransient<IOperationInvoker>(
                 (serviceProvider) =>
-                    new OperationInvoker(commandHanlderResolverFactory(serviceProvider),
-                        queryExecuterResolverFactory(serviceProvider)));
+                    new OperationInvoker(CommandHanlderResolverFactory(serviceProvider),
+                        AsyncCommandHanlderResolverFactory(serviceProvider),
+                        QueryExecuterResolverFactory(serviceProvider),
+                        AsyncQueryExecuterResolverFactory(serviceProvider)));
         }
     }
 }

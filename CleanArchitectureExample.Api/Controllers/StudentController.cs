@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CleanArchitectureExample.Application.CQRS;
+using CleanArchitectureExample.Application.Persistence;
+//using CleanArchitectureExample.Application.Persistence.Extensions;
 using CleanArchitectureExample.Application.Students.Commands.CreateStudent;
 using CleanArchitectureExample.Application.Students.Queries;
 using CleanArchitectureExample.Application.Students.Queries.GetStudentGithub;
 using CleanArchitectureExample.Domain;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureExample.Api.Controllers
 {
@@ -14,31 +18,35 @@ namespace CleanArchitectureExample.Api.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
-        private readonly IQueryable<Student> students;
+        private readonly IAsyncQueryable<Student> students;
         private readonly IOperationInvoker _operationInvoker;
 
-        public StudentController(IQueryable<Student> students, IOperationInvoker operationInvoker)
+        public StudentController(IAsyncQueryable<Student> students, IOperationInvoker operationInvoker)
         {
             this.students = students;
             this._operationInvoker = operationInvoker;
         }
         
         [HttpGet]
-        public ActionResult<IEnumerable<Student>> GetStudentsNamedSmith()
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentsNamedSmith()
         {
-            return Ok(students.Where(s => StudentQueries.GetStudentBySurname(s, "Smith")).ToList());
+            var dd = students.Where(s => StudentQueries.GetStudentBySurname(s, "Smith"));//.FirstOrDefaultAsync();
+
+            return Ok(await students.Where(s => StudentQueries.GetStudentBySurname(s, "Smith")).ToListAsync());
         }
+
         
         [HttpGet("{id}")]
-        public ActionResult<List<StudentGithubDto>> GetStudentsGithubsInCourse(int id)
+        public async Task<ActionResult<List<StudentGithubDto>>> GetStudentsGithubsInCourse(int id)
         {
-            return Ok(_operationInvoker.RunQuery(new GetStudentsGithubQuery(id)));
+            return Ok(await _operationInvoker.RunQueryAsync(new GetStudentsGithubQuery(id)));
         }
+
         [HttpPost]
-        public ActionResult Post()
+        public async Task<ActionResult> Post()
         {
             return 
-                _operationInvoker.Invoke(
+                (await _operationInvoker.InvokeAsync(
                     new CreateStudentCommand(
                         new Student
                         {
@@ -46,7 +54,7 @@ namespace CleanArchitectureExample.Api.Controllers
                             DateOfBirth = DateTime.Parse("28/11/1992"),
                             Firstname = "Jon",
                             Surname = "Smith"
-                        })).ToActionResult();
+                        }))).ToActionResult();
         }
 
         [HttpPost("validation-error")]

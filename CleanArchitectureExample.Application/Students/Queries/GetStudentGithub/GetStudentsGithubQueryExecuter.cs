@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CleanArchitectureExample.Application.CQRS;
+using CleanArchitectureExample.Application.Persistence;
 using CleanArchitectureExample.Domain;
 
 namespace CleanArchitectureExample.Application.Students.Queries.GetStudentGithub

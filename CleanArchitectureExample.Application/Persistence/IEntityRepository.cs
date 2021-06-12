@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CleanArchitectureExample.Application.Persistence
 {
@@ -16,5 +17,7 @@ namespace CleanArchitectureExample.Application.Persistence
         void Update(EntityType entity);
 
         void SaveChanges();
+
+        Task SaveChangesAsync();
     }
 }
