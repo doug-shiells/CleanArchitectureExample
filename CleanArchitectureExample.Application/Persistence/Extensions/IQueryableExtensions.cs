@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace CleanArchitectureExample.Application.Persistence.Extensions
 {
+    /// <summary>
+    /// These extension methods are used to call the related async methods from
+    /// Your implementation of of <see cref="IQueryableAsync"/> that will call the related async methods from your ORM
+    /// This seems a little convoluted but it allows us to use the Async Queryable extensions for DB calls without
+    /// a dependency on .net core (or another ORM) outside of our persistence DLL
+    /// </summary>
     public static class IQueryableExtensions
     {
         public static Task<List<TEntity>> ToListAsync<TEntity>(this IQueryable<TEntity> queryable,

@@ -14,7 +14,6 @@ namespace CleanArchitectureExample.Persistence.EntityFramework.Infrastructure
 
             serviceCollection.AddSingleton(typeof(IQueryableAsync), typeof(QueryableAsync));
             serviceCollection.AddScoped(typeof(IQueryable<>), typeof(EntityRepository<>));
-            serviceCollection.AddScoped(typeof(IAsyncQueryable<>), typeof(EntityRepository<>));
             serviceCollection.AddScoped(typeof(IEntityRepository<>), typeof(EntityRepository<>));
 
 

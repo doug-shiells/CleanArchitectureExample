@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CleanArchitectureExample.Api.Models;
 using CleanArchitectureExample.Application.CQRS;
-using CleanArchitectureExample.Application.Persistence;
-//using CleanArchitectureExample.Application.Persistence.Extensions;
 using CleanArchitectureExample.Application.Students.Commands.CreateStudent;
 using CleanArchitectureExample.Application.Students.Queries;
 using CleanArchitectureExample.Application.Students.Queries.GetStudentGithub;
@@ -18,10 +17,10 @@ namespace CleanArchitectureExample.Api.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
-        private readonly IAsyncQueryable<Student> students;
+        private readonly IQueryable<Student> students;
         private readonly IOperationInvoker _operationInvoker;
 
-        public StudentController(IAsyncQueryable<Student> students, IOperationInvoker operationInvoker)
+        public StudentController(IQueryable<Student> students, IOperationInvoker operationInvoker)
         {
             this.students = students;
             this._operationInvoker = operationInvoker;
@@ -30,12 +29,21 @@ namespace CleanArchitectureExample.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudentsNamedSmith()
         {
-            var dd = students.Where(s => StudentQueries.GetStudentBySurname(s, "Smith"));//.FirstOrDefaultAsync();
-
             return Ok(await students.Where(s => StudentQueries.GetStudentBySurname(s, "Smith")).ToListAsync());
         }
 
-        
+        [HttpGet("list")]
+        public async Task<ActionResult<IEnumerable<Student>>> GetSudentList()
+        {
+            return Ok(await students.Take(100).ToListAsync());
+        }
+
+        [HttpGet("public-key/{key}")]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentsNamedSmith(Guid publicKey)
+        {
+            return Ok(await students.Where(s => s.PublicKey == publicKey).ToListAsync());
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<List<StudentGithubDto>>> GetStudentsGithubsInCourse(int id)
         {
@@ -43,7 +51,7 @@ namespace CleanArchitectureExample.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post()
+        public async Task<ActionResult> Post(CreateStudentRequest studentRequest)
         {
             return 
                 (await _operationInvoker.InvokeAsync(
@@ -51,9 +59,9 @@ namespace CleanArchitectureExample.Api.Controllers
                         new Student
                         {
                             PublicKey = Guid.NewGuid(),
-                            DateOfBirth = DateTime.Parse("28/11/1992"),
-                            Firstname = "Jon",
-                            Surname = "Smith"
+                            DateOfBirth = studentRequest.DateOfBirth,
+                            Firstname = studentRequest.Firstname,
+                            Surname = studentRequest.Surname
                         }))).ToActionResult();
         }
 
