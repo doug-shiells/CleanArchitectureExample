@@ -8,11 +8,11 @@ using CleanArchitectureExample.Domain;
 
 namespace CleanArchitectureExample.Application.Students.Queries.GetStudentGithub
 {
-    internal class GetStudentsAsyncGithubQueryExecuter : IAsyncQueryExecutor<GetStudentsGithubQuery, List<StudentGithubDto>>
+    internal class GetStudentsAsyncGithubQueryExecutor : IAsyncQueryExecutor<GetStudentsGithubQuery, List<StudentGithubDto>>
     {
         private readonly IQueryable<Student> students;
 
-        public GetStudentsAsyncGithubQueryExecuter(IQueryable<Student> students)
+        public GetStudentsAsyncGithubQueryExecutor(IQueryable<Student> students)
         {
             this.students = students;
         }

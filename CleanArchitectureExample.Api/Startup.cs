@@ -35,7 +35,7 @@ namespace CleanArchitectureExample.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            QueryableAsyncFactory.InitFactory(app.ApplicationServices.GetRequiredService<IQueryableAsync>());
+            QuerableExtensionsFactory.InitFactory(app.ApplicationServices.GetRequiredService<IQueryableExtensions>());
 
             app.UseMvc();
         }

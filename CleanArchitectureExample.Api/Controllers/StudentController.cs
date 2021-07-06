@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitectureExample.Api.Models;
 using CleanArchitectureExample.Application.CQRS;
+using CleanArchitectureExample.Application.Persistence;
+using CleanArchitectureExample.Application.Persistence.Extensions;
 using CleanArchitectureExample.Application.Students.Commands.CreateStudent;
 using CleanArchitectureExample.Application.Students.Queries;
 using CleanArchitectureExample.Application.Students.Queries.GetStudentGithub;
 using CleanArchitectureExample.Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureExample.Api.Controllers
 {
@@ -20,7 +21,7 @@ namespace CleanArchitectureExample.Api.Controllers
         private readonly IQueryable<Student> students;
         private readonly IOperationInvoker _operationInvoker;
 
-        public StudentController(IQueryable<Student> students, IOperationInvoker operationInvoker)
+        public StudentController(IQueryable<Student> students,  IOperationInvoker operationInvoker)
         {
             this.students = students;
             this._operationInvoker = operationInvoker;

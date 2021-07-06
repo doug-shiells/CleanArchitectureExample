@@ -7,11 +7,11 @@ using CleanArchitectureExample.Domain;
 namespace CleanArchitectureExample.Application.Students.Queries.GetStudentGithub
 {
 
-    internal class GetStudentsGithubQueryExecuter : IQueryExecutor<GetStudentsGithubQuery, List<StudentGithubDto>>
+    internal class GetStudentsGithubQueryExecutor : IQueryExecutor<GetStudentsGithubQuery, List<StudentGithubDto>>
     {
         private readonly IQueryable<Course> courses;
 
-        public GetStudentsGithubQueryExecuter(IQueryable<Course> courses)
+        public GetStudentsGithubQueryExecutor(IQueryable<Course> courses)
         {
             this.courses = courses;
         }

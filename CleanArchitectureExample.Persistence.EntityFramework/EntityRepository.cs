@@ -57,33 +57,5 @@ namespace CleanArchitectureExample.Persistence.EntityFramework
         public Expression Expression => entitiesAsNoTracking.Expression;
         public IQueryProvider Provider => entitiesAsNoTracking.Provider;
         
-        public Task<List<TEntity>> ToListAsync(CancellationToken cancellationToken = default)
-            => entitiesAsNoTracking.ToListAsync(cancellationToken);
-
-        public Task<TEntity[]> ToArrayAsync(CancellationToken cancellationToken = default)
-            => entitiesAsNoTracking.ToArrayAsync(cancellationToken);
-
-        public Task LoadAsync(CancellationToken cancellationToken = default)
-            => entitiesAsNoTracking.LoadAsync(cancellationToken);
-
-        public Task<Dictionary<TKey, TEntity>> ToDictionaryAsync<TKey>(Func<TEntity, TKey> keySelector, CancellationToken cancellationToken = default)
-            => entitiesAsNoTracking.ToDictionaryAsync(keySelector,cancellationToken);
-        
-        public Task<Dictionary<TKey, TEntity>> ToDictionaryAsync<TKey>(Func<TEntity, TKey> keySelector, IEqualityComparer<TKey> comparer,
-            CancellationToken cancellationToken = default)
-            => entitiesAsNoTracking.ToDictionaryAsync(keySelector, comparer, cancellationToken);
-
-        public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(Func<TEntity, TKey> keySelector, Func<TEntity, TElement> elementSelector,
-            CancellationToken cancellationToken = default)
-            => entitiesAsNoTracking.ToDictionaryAsync(keySelector, elementSelector, cancellationToken);
-
-        public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(Func<TEntity, TKey> keySelector, Func<TEntity, TElement> elementSelector, IEqualityComparer<TKey> comparer,
-            CancellationToken cancellationToken = default)
-            => entitiesAsNoTracking.ToDictionaryAsync(keySelector, elementSelector, comparer, cancellationToken);
-
-        public Task ForEachAsync(Action<TEntity> action, CancellationToken cancellationToken = default)
-            => entitiesAsNoTracking.ForEachAsync(action, cancellationToken);
-
-
     }
 }

@@ -20,7 +20,7 @@ namespace CleanArchitectureExample.Application.Infrastructure
                     (dynamic)serviceProvider.GetService(typeof(IAsyncCommandHandler<>)
                         .MakeGenericType(command.GetType()));
 
-        private static readonly Func<IServiceProvider, Func<IQuery, dynamic>> QueryExecuterResolverFactory =
+        private static readonly Func<IServiceProvider, Func<IQuery, dynamic>> QueryExecutorResolverFactory =
             (serviceProvider) =>
                 (query) =>
                     (dynamic) serviceProvider.GetService(
@@ -33,7 +33,7 @@ namespace CleanArchitectureExample.Application.Infrastructure
                                      && i.GetGenericTypeDefinition() == typeof(IQuery<>))
                                  .GetGenericArguments()[0]));
 
-        private static readonly Func<IServiceProvider, Func<IQuery, dynamic>> AsyncQueryExecuterResolverFactory =
+        private static readonly Func<IServiceProvider, Func<IQuery, dynamic>> AsyncQueryExecutorResolverFactory =
             (serviceProvider) =>
                 (query) =>
                     (dynamic)serviceProvider.GetService(
@@ -146,8 +146,8 @@ namespace CleanArchitectureExample.Application.Infrastructure
                 (serviceProvider) =>
                     new OperationInvoker(CommandHanlderResolverFactory(serviceProvider),
                         AsyncCommandHanlderResolverFactory(serviceProvider),
-                        QueryExecuterResolverFactory(serviceProvider),
-                        AsyncQueryExecuterResolverFactory(serviceProvider)));
+                        QueryExecutorResolverFactory(serviceProvider),
+                        AsyncQueryExecutorResolverFactory(serviceProvider)));
         }
     }
 }
